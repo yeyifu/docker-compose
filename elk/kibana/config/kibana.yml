@@ -1,0 +1,21 @@
+#i18n.locale: "zh-CN"
+#xpack.spaces.enabled: false
+## Default Kibana configuration for docker target
+#server.name: kibana
+#server.host: "0"
+#elasticsearch.hosts: [ "http://elasticsearch:9200" ]
+#monitoring.ui.container.elasticsearch.enabled: true
+
+
+
+# ** THIS IS AN AUTO-GENERATED FILE **
+#
+
+# Default Kibana configuration for docker target
+i18n.locale: "zh-CN"
+server.name: kibana
+server.host: "0"
+elasticsearch.hosts: [ "http://elasticsearch:9200" ]
+xpack.monitoring.ui.container.elasticsearch.enabled: true
+elasticsearch.username: "elastic"
+elasticsearch.password: "es_123"

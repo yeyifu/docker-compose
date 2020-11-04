@@ -1,0 +1,3 @@
+http.host: "0.0.0.0"
+xpack.monitoring.enabled: true   #启动x-pack插件，192.168.4.45 为 elk 服务器的ip，请自行替换
+xpack.monitoring.elasticsearch.hosts: [ "http://elasticsearch:9200" ]
