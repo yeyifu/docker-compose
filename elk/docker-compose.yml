@@ -1,25 +1,28 @@
 version: '2.2'
 services:
   elasticsearch:
-    image: registry.cn-shenzhen.aliyuncs.com/yunwei-tools/elk7.1_es_20201104
-    #image: docker.elastic.co/elasticsearch/elasticsearch:7.1.1
     container_name: elk_es
-    environment:
-      - discovery.type=single-node
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-    volumes:
-      - ./es/data:/usr/share/elasticsearch/data
-      - ./es/config:/usr/share/elasticsearch/config
-    restart: always
+    #image: docker.elastic.co/elasticsearch/elasticsearch:7.1.1
+    image: registry.cn-shenzhen.aliyuncs.com/yyf-compose/elasticsearch:elk_7.1.1-20201105
     ports:
       - 9200:9200
       - 9300:9300
+    restart: always
+    environment:
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    #volumes:
+    #  - esdata:/usr/share/elasticsearch/data
     networks:
       - elknet
+
   kibana:
-    image: registry.cn-shenzhen.aliyuncs.com/yunwei-tools/elk7.1_kibana_20201027
-    #image: docker.elastic.co/kibana/kibana:7.1.1
     container_name: elk_kibana
+    #image: docker.elastic.co/kibana/kibana:7.1.1
+    image: registry.cn-shenzhen.aliyuncs.com/yyf-compose/kibana:elk_7.1.1-20201105
+    ports:
+      - "5601:5601"
+    restart: always
     environment:
       - elasticsearch.hosts=http://elasticsearch:9200
     volumes:
@@ -27,41 +30,40 @@ services:
       - ./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml
     depends_on:
       - elasticsearch
-    restart: always
-    ports:
-      - "5601:5601"
     networks:
       - elknet
+
   logstash:
-    image: registry.cn-shenzhen.aliyuncs.com/yunwei-tools/elk7.1_logstash_20201027
-    #image: docker.elastic.co/logstash/logstash-v1:7.1.1
     container_name: elk_logstash
-    restart: always
-    privileged: true
-    volumes:
-      - /etc/localtime:/etc/localtime
-      - ./logstash/pipeline/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
-      - /data/shell/dd.sh:/dd.sh
-    depends_on:
-      - elasticsearch
+    #image: docker.elastic.co/logstash/logstash:7.1.1
+    image: registry.cn-shenzhen.aliyuncs.com/yyf-compose/logstash:elk_7.1.1-20201105
     ports:
       - 9600:9600
       - 5044:5044
+    restart: always
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - ./logstash/pipeline/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+      - ./logstash/dd.sh:/dd.sh
+    depends_on:
+      - elasticsearch
     networks:
       - elknet
-  #filebeat:
-  #  #image: registry.cn-shenzhen.aliyuncs.com/yunwei-tools/elk7.1_filebeat_20201027
-  #  image: store/elastic/filebeat:7.1.1
-  #  container_name: elk_filebeat
-  #  restart: always
-  #  volumes:
-  #    - /etc/localtime:/etc/localtime
-  #    - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml
-  #    - /data/web/nginx/log:/var/log/nginx
-  #  depends_on:
-  #    - logstash
-  #  depends_on:
-  #    - elasticsearch
+
+  fluentd-pilot:
+    container_name: log-pilot-filebeat
+    image: registry.cn-shenzhen.aliyuncs.com/yyf-compose/log-pilot-0.9.6-filebeat:elk_7.1.1-20201105
+    privileged: true
+    restart: always
+    environment:
+      LOGSTASH_HOST: 192.168.5.45
+      LOGSTASH_PORT: 5044
+    volumes:
+      - "/etc/localtime:/etc/localtime"
+      - "/:/host"
+      - "/run/docker.sock:/var/run/docker.sock"
+    networks:
+      - elknet
 
 networks:
   elknet:
