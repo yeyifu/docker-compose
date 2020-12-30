@@ -64,6 +64,19 @@ services:
       - "/run/docker.sock:/var/run/docker.sock"
     networks:
       - elknet
+      
+  #捕捉关键词进行报警
+  elastalert:
+    image: registry.cn-shenzhen.aliyuncs.com/yyf-compose/elastalert:29
+    environment:
+      LANG: C.UTF-8
+    tty: true
+    working_dir: "/home/elastalert-dingtalk-plugin"
+    restart: always
+    volumes:
+      -  /etc/localtime:/etc/localtime
+    networks:
+      - elknet
 
 networks:
   elknet:
