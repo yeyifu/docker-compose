@@ -1,0 +1,11 @@
+version: '3'
+services:
+  elastalert:
+    image: registry.cn-shenzhen.aliyuncs.com/yyf-compose/elastalert:32
+    environment:
+      LANG: C.UTF-8
+    tty: true
+    working_dir: "/home/elastalert-dingtalk-plugin"
+    restart: always
+    volumes:
+      -  /etc/localtime:/etc/localtime

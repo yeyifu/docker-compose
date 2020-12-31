@@ -1,0 +1,34 @@
+version: '3'
+services:
+  master:
+    image: redis:5.0-alpine
+    container_name: redis-master
+    restart: always
+    privileged: true
+    volumes:
+      - "./master/data:/data"
+      - "./master/etc:/etc/redis"
+    command: "redis-server /etc/redis/redis.conf --port 16379"
+    network_mode: "host"
+
+  slave1:
+    image: redis:5.0-alpine
+    container_name: redis-slave-1
+    restart: always
+    privileged: true
+    volumes:
+      - "./slave1/data:/data"
+      - "./slave1/etc:/etc/redis"
+    command: "redis-server /etc/redis/redis.conf --port 16380 --slaveof 192.168.5.45 16379"
+    network_mode: "host"
+
+  slave2:
+    image: redis:5.0-alpine
+    container_name: redis-slave-2
+    restart: always
+    privileged: true
+    volumes:
+      - "./slave2/data:/data"
+      - "./slave2/etc:/etc/redis"
+    command: "redis-server /etc/redis/redis.conf --port 16381 --slaveof 192.168.5.45 16379"
+    network_mode: "host"
