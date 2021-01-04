@@ -1,0 +1,1 @@
+修改docker-compose.yml文件中command命令中的Ip和Port

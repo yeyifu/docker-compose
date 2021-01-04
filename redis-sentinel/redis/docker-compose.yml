@@ -1,7 +1,7 @@
 version: '3'
 services:
   master:
-    image: redis:5.0-alpine
+    image: redis
     container_name: redis-master
     restart: always
     privileged: true
@@ -12,7 +12,7 @@ services:
     network_mode: "host"
 
   slave1:
-    image: redis:5.0-alpine
+    image: redis
     container_name: redis-slave-1
     restart: always
     privileged: true
@@ -23,7 +23,7 @@ services:
     network_mode: "host"
 
   slave2:
-    image: redis:5.0-alpine
+    image: redis
     container_name: redis-slave-2
     restart: always
     privileged: true
